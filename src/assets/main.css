@@ -1,0 +1,8 @@
+.register{
+    display: flex;
+    justify-content: center;
+}
+
+#sign-up{
+    margin-top: 15px;
+}

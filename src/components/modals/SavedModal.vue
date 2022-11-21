@@ -1,6 +1,6 @@
 <template>
-  <div class="modal-overlay" @click="$emit('close-modal')">
-    <div class="modal">
+  <div class="statement-saved-modal-overlay" @click="$emit('close-modal')">
+    <div class="statement-saved-modal">
 <!--      <img class="check" src="~/assets/check-icon.png" alt="" />-->
       <h6>Сохранено!</h6>
     </div>
@@ -17,7 +17,7 @@ export default {
 
 <style scoped>
 
-.modal-overlay {
+.statement-saved-modal-overlay {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -28,7 +28,7 @@ export default {
   background-color: #000000da;
 }
 
-.modal {
+.statement-saved-modal {
   text-align: center;
   background-color: white;
   height: 70px;

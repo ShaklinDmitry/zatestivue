@@ -8,7 +8,7 @@
         type="text"
         v-model="statement"
     />
-    <button v-on:click="sendStatement">Создать цитату</button>
+    <button v-on:click="saveStatement">Создать цитату</button>
     <SavedModal v-show="showModal" @close-modal="showModal = false"/>
   </div>
 </template>
@@ -31,8 +31,7 @@ export default {
     };
   },
   methods: {
-    sendStatement: function() {
-      console.log('send statement')
+    saveStatement: function() {
       var data = JSON.stringify({"text":this.statement});
       var config = {
         method: 'post',
@@ -44,9 +43,9 @@ export default {
       };
 
       axios(config)
-          .then((response) => {
+          .then(() => {
+            console.log('show modal')
             this.showModal = true
-            console.log(JSON.stringify(response.data));
           })
           .catch(function (error) {
             console.log(error);
