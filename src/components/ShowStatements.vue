@@ -34,7 +34,7 @@
               value="yes"
               unchecked-value="nope"
           >
-            Make best statement
+            best statement
           </b-form-checkbox>
 
           <div>State: <strong>{{ beststatement_status }}</strong></div>
@@ -161,16 +161,31 @@ export default {
 
       var data = '';
 
+      let urlForChangeStatementType = 0;
+      if(this.editModal.item.is_best_statement){
+        urlForChangeStatementType = process.env.VUE_APP_URL+'/api/beststatements/' + this.editModal.item.id + '/make-normalstatement'
+      }else{
+        urlForChangeStatementType = process.env.VUE_APP_URL+'/api/statement/' + this.editModal.item.id + '/make-beststatement'
+      }
+
+      console.log(urlForChangeStatementType)
+
       var config = {
         method: 'patch',
-        url: process.env.VUE_APP_URL+'/api/statement/' + this.editModal.item.id + '/make-beststatement',
+        url: urlForChangeStatementType,
         headers: { Authorization: `Bearer ` + localStorage.getItem('apitoken')},
         data : data
       };
 
       axios(config)
           .then(() => {
-             console.log('item switched to best');
+             console.log('item switched type');
+            if(this.editModal.item.is_best_statement){
+              this.editModal.item.is_best_statement = 0
+            }else{
+              this.editModal.item.is_best_statement = 1
+            }
+
           })
           .catch(function (error) {
             console.log(error);
