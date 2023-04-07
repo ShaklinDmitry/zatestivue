@@ -27,9 +27,10 @@ export default {
     makeStatements: function() {
       var config = {
         method: 'post',
-        url: 'http://89.108.114.164:8100/api/statements/make_statements_from_text',
+        url: process.env.VUE_APP_URL+'/api/text/generate-statements',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ` + localStorage.getItem('apitoken')
         },
       };
 

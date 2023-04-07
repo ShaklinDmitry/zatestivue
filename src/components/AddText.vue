@@ -35,9 +35,10 @@ export default {
       var data = JSON.stringify({"text":this.text});
       var config = {
         method: 'post',
-        url: 'http://89.108.114.164:8100/api/statements/text',
+        url: process.env.VUE_APP_URL+'/api/statements/text',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+           Authorization: `Bearer ` + localStorage.getItem('apitoken')
         },
         data : data
       };

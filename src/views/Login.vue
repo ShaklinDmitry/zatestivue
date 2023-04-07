@@ -1,12 +1,7 @@
 <template>
   <div class="register">
-    <form @submit.prevent="register" v-if="!formSubmitted">
-      <h3>Sign Up</h3>
-
-      <div class="form-group">
-        <label>Full Name</label>
-        <input type="text" v-model="userName" class="form-control form-control-lg"/>
-      </div>
+    <form @submit.prevent="login" v-if="!formSubmitted">
+      <h3>Login</h3>
 
       <div class="form-group">
         <label>Email address</label>
@@ -18,18 +13,12 @@
         <input type="password" v-model="password" class="form-control form-control-lg" />
       </div>
 
-      <button type="submit" class="btn btn-dark btn-lg btn-block" id="sign-up">Sign Up</button>
+      <button type="submit" class="btn btn-dark btn-lg btn-block" id="sign-up">Login</button>
 
-      <p class="forgot-password text-right">
-        Already registered
-<!--        <router-link :to="{name: 'login'}">sign in?</router-link>-->
-      </p>
     </form>
     <div v-if="formSubmitted">
-      <h3>You registred</h3>
-      <p>Name: {{ userName }}</p>
+      <h3>You logged</h3>
       <p>Email: {{ email }}</p>
-      <small>Click on run to launch the app again.</small>
     </div>
   </div>
 </template>
@@ -40,26 +29,26 @@
 import axios from "axios";
 
 export default {
-  name: 'Register',
+  name: 'Login',
   components: {
 
   },
   data() {
     return {
-      userName: '',
       email: '',
       password: '',
       formSubmitted: false
     };
   },
   methods: {
-    register: function() {
-      var data = JSON.stringify({"name":this.userName,
-                                        "email": this.email,
-                                        "password": this.password});
+    login: function() {
+      var data = JSON.stringify(
+          {"email": this.email,
+                 "password": this.password
+                 });
       var config = {
         method: 'post',
-        url: 'http://89.108.99.73:8100/api/register',
+        url: 'http://89.108.99.73:8100/api/login',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -68,8 +57,8 @@ export default {
 
       axios(config)
           .then((success) => {
-            this.formSubmitted = true
-            console.log(success.data.access_token);
+            this.formSubmitted = true;
+            console.log(success.data);
             localStorage.setItem('apitoken', success.data.access_token)
           })
           .catch(function (error) {
