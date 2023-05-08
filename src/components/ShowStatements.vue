@@ -19,25 +19,15 @@
 
     </b-table>
 
-    <b-modal :id="deleteModal.id" :title="deleteModal.title" @ok="handleOk" @hide="resetDeleteModal">
+    <b-modal :id="deleteModal.id" :title="deleteModal.title" @ok="handleDelete" @hide="resetDeleteModal">
       <pre>You want to delete this element</pre>
     </b-modal>
 
-    <b-modal :id="editModal.id" :title="editModal.title" @ok="handleEdit" @hide="resetEditModal">
+    <b-modal :id="editModal.id" :title="editModal.title"  @hide="resetEditModal">
       <pre>Edit modal</pre>
       <template>
         <div>
-          <b-form-checkbox
-              id="beststatement"
-              v-model="beststatement_status"
-              name="beststatement"
-              value="yes"
-              unchecked-value="nope"
-          >
-            best statement
-          </b-form-checkbox>
-
-          <div>State: <strong>{{ beststatement_status }}</strong></div>
+          <b-button @click="handleMakeBestStatement" variant="outline-primary"> {{editModal.transferTypeButton}}</b-button>
         </div>
       </template>
     </b-modal>
@@ -72,10 +62,10 @@ export default {
       editModal:{
         id: 'edit-modal',
         title: '',
-        item: ''
+        item: '',
+        transferTypeButton: 'Make statement the best'
       },
       currentPickUpItem: '',
-      beststatement_status: 'nope'
     }
   },
   beforeMount(){
@@ -122,18 +112,14 @@ export default {
       this.$root.$emit('bv::show::modal', this.deleteModal.id, button)
     },
     editButton(item, index, button){
-      console.log(item)
-      if(item.is_best_statement == 1)
-        this.beststatement_status = 'yes'
-      else
-        this.beststatement_status = 'nope'
+   //   console.log(item)
 
       this.editModal.title = `Row index: ${index}`
       this.editModal.item = item
       this.currentPickUpItem = index
       this.$root.$emit('bv::show::modal', this.editModal.id, button)
     },
-    handleOk() {
+    handleDelete() {
 
       //здесь вызвать метод удаления высказывания
       var data = '';
@@ -156,35 +142,29 @@ export default {
           });
 
     },
-    handleEdit(){
-      console.log('edit button')
+    handleMakeBestStatement(){
+      console.log('make best statement button')
 
-      var data = '';
+      var data = {"statementId":this.editModal.item.id};
 
-      let urlForChangeStatementType = 0;
-      if(this.editModal.item.is_best_statement){
-        urlForChangeStatementType = process.env.VUE_APP_URL+'/api/beststatements/' + this.editModal.item.id + '/make-normalstatement'
-      }else{
-        urlForChangeStatementType = process.env.VUE_APP_URL+'/api/statement/' + this.editModal.item.id + '/make-beststatement'
-      }
-
-      console.log(urlForChangeStatementType)
+      console.log(data)
 
       var config = {
-        method: 'patch',
-        url: urlForChangeStatementType,
+        method: 'post',
+        url: process.env.VUE_APP_URL+'/api/statements/transfer-to-best-statements/',
         headers: { Authorization: `Bearer ` + localStorage.getItem('apitoken')},
         data : data
       };
 
       axios(config)
           .then(() => {
-             console.log('item switched type');
-            if(this.editModal.item.is_best_statement){
-              this.editModal.item.is_best_statement = 0
-            }else{
-              this.editModal.item.is_best_statement = 1
-            }
+            this.editModal.transferTypeButton = 'transfered'
+            console.log('item switched type');
+            // if(this.editModal.item.is_best_statement){
+            //   this.editModal.item.is_best_statement = 0
+            // }else{
+            //   this.editModal.item.is_best_statement = 1
+            // }
 
           })
           .catch(function (error) {
@@ -192,7 +172,44 @@ export default {
           });
 
 
-    }
+    },
+    // handleEdit(){
+    //   console.log('edit button')
+    //
+    //   var data = '';
+    //
+    //   let urlForChangeStatementType = 0;
+    //   if(this.editModal.item.is_best_statement){
+    //     urlForChangeStatementType = process.env.VUE_APP_URL+'/api/beststatements/' + this.editModal.item.id + '/make-normalstatement'
+    //   }else{
+    //     urlForChangeStatementType = process.env.VUE_APP_URL+'/api/statement/' + this.editModal.item.id + '/make-beststatement'
+    //   }
+    //
+    //   console.log(urlForChangeStatementType)
+    //
+    //   var config = {
+    //     method: 'patch',
+    //     url: urlForChangeStatementType,
+    //     headers: { Authorization: `Bearer ` + localStorage.getItem('apitoken')},
+    //     data : data
+    //   };
+    //
+    //   axios(config)
+    //       .then(() => {
+    //          console.log('item switched type');
+    //         if(this.editModal.item.is_best_statement){
+    //           this.editModal.item.is_best_statement = 0
+    //         }else{
+    //           this.editModal.item.is_best_statement = 1
+    //         }
+    //
+    //       })
+    //       .catch(function (error) {
+    //         console.log(error);
+    //       });
+    //
+    //
+    // }
   }
 }
 </script>
